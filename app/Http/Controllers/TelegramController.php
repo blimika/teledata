@@ -2152,9 +2152,9 @@ Aplikasi ini dikembangkan oleh Bidang IPDS BPS Prov. NTB.
                         {
                             //ada lebih 1 pages
                             $total_tabel = $response['data'][0]['pages'];
-                            if ($total_tabel > 5)
+                            if ($total_tabel > 4)
                             {
-                                $total_tabel = 5;
+                                $total_tabel = 4;
                             }
 
                             for ($i = 1; $i <= $total_tabel; $i++)
