@@ -227,8 +227,6 @@ class TelegramController extends Controller
                     $this->username = $this->first_name;
                 }
             }
-
-
             switch ($this->text) {
                 case '/start':
                     $this->AwalStart();
@@ -2148,16 +2146,15 @@ Aplikasi ini dikembangkan oleh Bidang IPDS BPS Prov. NTB.
                     $h = new WebApiBps();
                     $keyword = rawurlencode($this->text);
                     $response = $h->caristatistik($keyword,1);
-
                     if ($response['data-availability']=='available')
                     {
                         if ($response['data'][0]['pages'] > 1)
                         {
                             //ada lebih 1 pages
                             $total_tabel = $response['data'][0]['pages'];
-                            if ($total_tabel > 10)
+                            if ($total_tabel > 3)
                             {
-                                $total_tabel = 10;
+                                $total_tabel = 3;
                             }
 
                             for ($i = 1; $i <= $total_tabel; $i++)
@@ -2165,14 +2162,22 @@ Aplikasi ini dikembangkan oleh Bidang IPDS BPS Prov. NTB.
                                 $message ='';
                                 $message ='📊 Hasil Pencarian <b>Tabel Statistik</b> : ' . chr(10);
                                 $message .='🔐 Kata kunci : <b>'.$this->text.'</b>' . chr(10);
-                                $message .= '📘 Halaman : '. $i .chr(10);
+                                $message .= '📘 Halaman : '. $i .' dari '.$total_tabel .chr(10);
                                 $message .='--------------------------------------------'.chr(10);
                                 $respon = $h->caristatistik($keyword,$i);
                                 foreach ($respon['data'][1] as $item)
                                 {
-                                    $message .= '🔵 Judul Tabel : <b>'.$item['title'].'</b>' .chr(10);
-                                    $message .= '🔵 Update : <b>'.\Carbon\Carbon::parse($item['updt_date'])->format('d M Y').'</b> 🔸 <a href="'.$item['excel'].'">Download Tabel</a> ('.$item['size'].')' .chr(10);
-                                    $message .='--------------------------------------------'.chr(10);
+                                    if ($item['oldest_period'] == $item['latest_period'])
+                                    {
+                                        $periode_tahun = $item['oldest_period'];
+                                    }
+                                    else
+                                    {
+                                        $periode_tahun = $item['oldest_period'].'-'.$item['latest_period'];
+                                    }
+                                    $message .= '🔵 Judul Tabel : <b>'.$item['title'] .'Tahun '.$periode_tahun.'</b>' .chr(10);
+                                $message .= '🔵 Update : <b>'.\Carbon\Carbon::parse($item['last_update'])->format('d M Y').'</b> 🔸 <a href="'.env('WEB_BPS').'/id/statistics-table/'.$item['tablesource'].'/'.$item['id'].'/'.$this->makeSlug($item['title']).'.html">Link Tabel</a>' .chr(10);
+                                $message .='--------------------------------------------'.chr(10);
                                 }
                                 $respon = Telegram::sendMessage([
                                     'chat_id' => $this->chat_id,
@@ -2191,8 +2196,16 @@ Aplikasi ini dikembangkan oleh Bidang IPDS BPS Prov. NTB.
                             foreach ($response['data'][1] as $item)
                             {
 
-                                $message .= '🔵 Judul Tabel : <b>'.$item['title'].'</b>' .chr(10);
-                                $message .= '🔵 Update : <b>'.\Carbon\Carbon::parse($item['updt_date'])->format('d M Y').'</b> 🔸 <a href="'.$item['excel'].'">Download Tabel</a> ('.$item['size'].')' .chr(10);
+                                if ($item['oldest_period'] == $item['latest_period'])
+                                {
+                                    $periode_tahun = $item['oldest_period'];
+                                }
+                                else
+                                {
+                                    $periode_tahun = $item['oldest_period'].'-'.$item['latest_period'];
+                                }
+                                $message .= '🔵 Judul Tabel : <b>'.$item['title'] .'Tahun '.$periode_tahun.'</b>' .chr(10);
+                                $message .= '🔵 Update : <b>'.\Carbon\Carbon::parse($item['last_update'])->format('d M Y').'</b> 🔸 <a href="'.env('WEB_BPS').'/id/statistics-table/'.$item['tablesource'].'/'.$item['id'].'/'.$this->makeSlug($item['title']).'.html">Link Tabel</a>' .chr(10);
                                 $message .='--------------------------------------------'.chr(10);
                             }
                             $respon = Telegram::sendMessage([
@@ -2736,6 +2749,13 @@ Aplikasi ini dikembangkan oleh Bidang IPDS BPS Prov. NTB.
                 $messageId = $respon->getMessageId();
                 $this->AwalStart();
             }
+    }
+    public function makeSlug($title) {
+        $title = preg_replace('![\s]+!u', '-', strtolower($title));
+        $title = preg_replace('![^-\pL\pN\s]+!u', '', $title);
+        $title = preg_replace('![-\s]+!u', '-', $title);
+
+        return trim($title, '-');
     }
     protected function TeruskanPesan($kirim_chat_id)
     {

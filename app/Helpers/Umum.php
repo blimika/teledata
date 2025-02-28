@@ -50,7 +50,7 @@ class WebApiBps
         $result = json_decode($result, TRUE);
 		return $result;
     }
-    public function caristatistik($keyword,$page)
+    public function old_caristatistik($keyword,$page)
     {
         //$getdata = "?model=publication&domain=5200&key=".$this->webapi."&keyword=".$keyword;
         if ($page>1)
@@ -59,6 +59,22 @@ class WebApiBps
         }
         else {
             $url="https://webapi.bps.go.id/v1/api/list/?model=statictable&domain=5200&key=".$this->webapi."&keyword=".$keyword;
+        }
+
+		$ch = $this->connectcurl($this->ch, $url);
+        $result = curl_exec ($ch);
+        $result = json_decode($result, TRUE);
+		return $result;
+    }
+    public function caristatistik($keyword,$page)
+    {
+        //$getdata = "?model=publication&domain=5200&key=".$this->webapi."&keyword=".$keyword;
+        if ($page>1)
+        {
+            $url="https://webapi.bps.go.id/v1/api/list/?model=tablestatistic&domain=5200&key=".$this->webapi."&keyword=".$keyword."&page=".$page;
+        }
+        else {
+            $url="https://webapi.bps.go.id/v1/api/list/?model=tablestatistic&domain=5200&key=".$this->webapi."&keyword=".$keyword;
         }
 
 		$ch = $this->connectcurl($this->ch, $url);
