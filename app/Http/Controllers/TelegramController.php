@@ -2175,7 +2175,7 @@ Aplikasi ini dikembangkan oleh Bidang IPDS BPS Prov. NTB.
                                     {
                                         $periode_tahun = $item['oldest_period'].'-'.$item['latest_period'];
                                     }
-                                    $message .= '🔵 Judul Tabel : <b>'.$item['title'] .'Tahun '.$periode_tahun.'</b>' .chr(10);
+                                    $message .= '🔵 Judul Tabel : <b>'.$item['title'] .' Tahun '.$periode_tahun.'</b>' .chr(10);
                                 $message .= '🔵 Update : <b>'.\Carbon\Carbon::parse($item['last_update'])->format('d M Y').'</b> 🔸 <a href="'.env('WEB_BPS').'/id/statistics-table/'.$item['tablesource'].'/'.$item['id'].'/'.$this->makeSlug($item['title']).'.html">Link Tabel</a>' .chr(10);
                                 $message .='--------------------------------------------'.chr(10);
                                 }
@@ -2204,7 +2204,7 @@ Aplikasi ini dikembangkan oleh Bidang IPDS BPS Prov. NTB.
                                 {
                                     $periode_tahun = $item['oldest_period'].'-'.$item['latest_period'];
                                 }
-                                $message .= '🔵 Judul Tabel : <b>'.$item['title'] .'Tahun '.$periode_tahun.'</b>' .chr(10);
+                                $message .= '🔵 Judul Tabel : <b>'.$item['title'] .' Tahun '.$periode_tahun.'</b>' .chr(10);
                                 $message .= '🔵 Update : <b>'.\Carbon\Carbon::parse($item['last_update'])->format('d M Y').'</b> 🔸 <a href="'.env('WEB_BPS').'/id/statistics-table/'.$item['tablesource'].'/'.$item['id'].'/'.$this->makeSlug($item['title']).'.html">Link Tabel</a>' .chr(10);
                                 $message .='--------------------------------------------'.chr(10);
                             }
